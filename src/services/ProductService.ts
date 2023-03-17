@@ -1,4 +1,4 @@
-import fs from 'fs'
+import fs, { copyFileSync } from 'fs'
 
 
 class ProductService {
@@ -26,20 +26,29 @@ class ProductService {
          const conteudo = fs.readFileSync('products.json')
          return JSON.parse(conteudo)
 
-
-
     }
 
     public getStock() {
         const products = fs.readFileSync('products.json')
         const jsondata = JSON.parse(products);
-        return jsondata.map((product) => ({
+        let stock = jsondata.map((product) => ({
             nome: product.nome,
             qtde: product.qtde,
             preco: product.preco,
             valor_estoque: product.qtde * product.preco
     }))
+    return stock
 }
+
+    public getStockPrice() {
+        const products = fs.readFileSync('products.json')
+        const jsondata = JSON.parse(products);
+        let stock = jsondata.reduce((aux, product) => {
+            const stock_value = product.qtde * product.preco
+            return aux + stock_value
+    }, 0)
+    return ({ValorTotalEstoque: stock})
+    }
 
 }
 export default new ProductService
